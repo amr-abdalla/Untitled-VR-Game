@@ -1,18 +1,32 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MonoBehaviourExtensionsDemo : MonoBehaviour
 {
 	public int i = 0;
 
-	void Start()
+	private IEnumerator Start()
 	{
-		this.Wait(1);
+		yield return (this.Wait(1));
 		Debug.Log("done waiting");
-		this.InvokeDelayed(1, nameof(HelloWorld));
-		this.Wait(1);
-		this.InvokeDelayed(1, nameof(HelloWorld), 4);
-		this.Wait(1);
-		this.InvokeRepeated(2, 2, nameof(CountedHelloWorld));
+
+		UnityAction helloWorld1 = () => HelloWorld();
+		yield return(this.InvokeDelayed(helloWorld1, 2)); //this will halt everything below until it finishes invoking
+
+		UnityAction helloWorld2 = () => HelloWorld(2);
+		yield return(this.InvokeDelayed(helloWorld2, 2)); //this will halt everything below until it finishes invoking
+
+		UnityAction helloWorld3= () => HelloWorld(200);
+		this.InvokeDelayed(helloWorld3, 2); //this will NOT halt everything below until it finishes invoking, it just invokes it with a delay
+
+		UnityAction countedHelloWorld = () => CountedHelloWorld();
+		var repeatedRoutine = this.InvokeRepeated(countedHelloWorld, 0, 0.5f);
+
+		yield return (this.Wait(3));
+		Debug.Log("stopping now");
+		StopCoroutine(repeatedRoutine);
+
 	}
 
 	public void HelloWorld()
@@ -22,7 +36,7 @@ public class MonoBehaviourExtensionsDemo : MonoBehaviour
 
 	public void HelloWorld(int num)
 	{
-		Debug.Log("hello world #" + num);
+		Debug.Log("hello world # " + num);
 	}
 
 	public void CountedHelloWorld()

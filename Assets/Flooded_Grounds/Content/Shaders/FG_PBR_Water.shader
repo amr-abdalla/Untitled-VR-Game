@@ -23,10 +23,10 @@ Properties {
     ENDCG
 
 SubShader { 
-	Tags { "RenderType"="Opaque" "Queue"="Geometry" }
+	Tags { "RenderType"="Opaque" "Queue"="Geometry" "RenderPipeline"="UniversalPipeline" "UniversalMaterialType" = "Lit"}
 	LOD 200
 	
-	CGPROGRAM
+	HLSLPROGRAM
 	#include "UnityPBSLighting.cginc"
 	#pragma surface surf Standard vertex:vert
 	#pragma target 3.0
@@ -99,7 +99,7 @@ void surf (Input IN, inout SurfaceOutputStandard o) {
 	//o.Alpha = _Opacity;
 	
 }
-ENDCG
+ENDHLSL
 
 
 
